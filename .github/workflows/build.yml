@@ -68,4 +68,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: gh release create "${GITHUB_REF_NAME}" release/*.zip --title "Codex Poster ${GITHUB_REF_NAME}" --notes "独立开源的本机 Codex 海报切换器。安装和安全说明见 README。"
+        run: |
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            gh release upload "${GITHUB_REF_NAME}" release/*.zip --clobber
+          else
+            gh release create "${GITHUB_REF_NAME}" release/*.zip --title "Codex Poster ${GITHUB_REF_NAME}" --notes "独立开源的本机 Codex 海报切换器。安装和安全说明见 README。"
+          fi
