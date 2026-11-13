@@ -7,7 +7,7 @@
 ## 三步上手
 
 1. 安装并登录官方 Codex 桌面应用，然后**完全退出 Codex**。
-2. 从本仓库的 [Releases 下载页](https://github.com/menglushen787-eng/codex-poster-switcher/releases/latest)下载你系统的安装包，按下面的 Mac 或 Windows 步骤打开海报切换器。
+2. 从本仓库的 [Releases 下载页](https://github.com/mls787/codex-poster-switcher/releases/latest)下载你系统的安装包，按下面的 Mac 或 Windows 步骤打开海报切换器。
 3. 点“添加一张海报”选择自己的 PNG/JPG 图片，再点“启动 Codex 并应用”。切换其他海报时，点图片卡片上的“切换”，**不必重启已连接的 Codex**。
 
 推荐用 16:9 的纯背景图，例如 2560 × 1440。图片不要包含假的聊天框或按钮。单张最多 10 MB；软件不附带任何动漫图片，请自行使用有权使用的图片。

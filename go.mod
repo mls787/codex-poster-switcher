@@ -1,4 +1,4 @@
-module github.com/menglushen787-eng/codex-poster-switcher
+module github.com/mls787/codex-poster-switcher
 
 go 1.27
 
