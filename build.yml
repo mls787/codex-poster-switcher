@@ -1,0 +1,71 @@
+name: Build Mac and Windows
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  mac:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Test and build
+        run: |
+          go test ./...
+          mkdir -p dist/CodexPoster.app/Contents/MacOS
+          go build -trimpath -ldflags='-s -w' -o dist/CodexPoster.app/Contents/MacOS/CodexPoster .
+          cp Info.plist dist/CodexPoster.app/Contents/Info.plist
+          ditto -c -k --sequesterRsrc --keepParent dist/CodexPoster.app dist/CodexPoster-macOS.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CodexPoster-macOS
+          path: dist/CodexPoster-macOS.zip
+
+  windows:
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Test and build
+        shell: pwsh
+        run: |
+          go test ./...
+          New-Item -ItemType Directory -Force dist | Out-Null
+          go build -trimpath -ldflags='-s -w -H=windowsgui' -o dist/CodexPoster.exe .
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
+          $vs = & $vswhere -latest -products * -property installationPath
+          if (-not $vs) { throw 'Visual Studio C++ tools not found' }
+          $vcvars = Join-Path $vs 'VC\Auxiliary\Build\vcvars64.bat'
+          $cmd = '"' + $vcvars + '" && cl /nologo /EHsc /std:c++17 /Fe:dist\codex-activate.exe windows\codex-activate.cpp ole32.lib'
+          cmd.exe /c $cmd
+          if ($LASTEXITCODE -ne 0) { throw 'Windows activation helper build failed' }
+          Compress-Archive -Path dist\CodexPoster.exe,dist\codex-activate.exe -DestinationPath dist\CodexPoster-Windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CodexPoster-Windows-x64
+          path: dist/CodexPoster-Windows-x64.zip
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [mac, windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: CodexPoster-*
+          path: release
+          merge-multiple: true
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release create "${GITHUB_REF_NAME}" release/*.zip --title "Codex Poster ${GITHUB_REF_NAME}" --notes "独立开源的本机 Codex 海报切换器。安装和安全说明见 README。"
