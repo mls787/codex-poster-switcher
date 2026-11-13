@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="poster-token" content="{{TOKEN}}">
+  <meta name="color-scheme" content="dark">
+  <title>Codex 海报切换器</title>
+  <link rel="stylesheet" href="/ui.css">
+  <script src="/ui.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"><span></span></span><span>Codex Poster</span></div>
+      <div class="badge"><span class="dot" id="connection-dot"></span><span id="connection-label">正在检查连接</span></div>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">LOCAL POSTER MANAGER</p>
+      <h1>让工作窗口，<br><em>换一种心情。</em></h1>
+      <p class="intro">选择自己的图片，保存成海报，随时切换。图片只留在你的电脑里。</p>
+      <div class="hero-actions">
+        <button class="primary" id="launch-button" type="button">启动 Codex 并应用 <span aria-hidden="true">↗</span></button>
+        <button class="quiet" id="restore-button" type="button">恢复官方外观</button>
+      </div>
+      <p class="notice" id="status" role="status">正在加载…</p>
+    </section>
+
+    <section class="workspace">
+      <div class="section-heading"><div><p class="eyebrow">YOUR COLLECTION</p><h2>我的海报</h2></div><span id="theme-count">0 张</span></div>
+      <div class="grid" id="theme-grid"></div>
+      <label class="dropzone" id="dropzone" for="image-input" tabindex="0">
+        <span class="plus" aria-hidden="true">+</span>
+        <strong>添加一张海报</strong>
+        <span>点击选择或拖入 PNG、JPG · 最大 10 MB</span>
+      </label>
+      <input id="image-input" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" hidden>
+    </section>
+
+    <footer>
+      <span>独立开源工具 · 不包含任何动漫或第三方图片</span>
+      <button id="quit-button" type="button">退出设置器</button>
+    </footer>
+    <p class="security">此工具会用仅绑定本机的调试端口给 Codex 加载海报。同一台电脑上的其他程序可能读取该调试端口；恢复后请完全退出 Codex，再从官方入口打开。</p>
+  </main>
+</body>
+</html>
